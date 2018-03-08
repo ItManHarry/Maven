@@ -36,7 +36,7 @@
 
 - 设置User Settings选项，选择本地setting.xml文件。
 
-![mavenecfg2](img/emconfig2.jpg)
+![mavenecfg2](../img/emconfig2.jpg)
 
 - Eclipse配置本地Maven完成
 
