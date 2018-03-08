@@ -26,7 +26,7 @@
 	```
 - 本地环境配置完毕
 
-#4.Eclipse集成配置本地Maven
+# 4.Eclipse集成配置本地Maven
 
 - 打开Eclipse,点击工具栏的Window,下拉菜单选择Preferences。
 
