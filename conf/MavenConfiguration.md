@@ -10,13 +10,13 @@
 # 3.Maven下载
 - [Apache Maven地址][apache]
 
-![maven](img/maven.jpg)
+![maven](../img/maven.jpg)
 
 - 解压后配置环境变量(Windows下):
 
-![mavenconf1](img/mconfig1.jpg)
+![mavenconf1](../img/mconfig1.jpg)
 
-![mavenconf2](img/mconfig2.jpg)
+![mavenconf2](../img/mconfig2.jpg)
 
 - 修改conf下的setting.xml文件:
 
@@ -32,7 +32,7 @@
 
 - 找到Maven,展开找到Installations，点击Add新增本地Maven,并勾选。
 
-![mavenecfg1](img/emconfig1.jpg)
+![mavenecfg1](../img/emconfig1.jpg)
 
 - 设置User Settings选项，选择本地setting.xml文件。
 
