@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.SysDocumentVersionMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 新增文档 -->
+	<insert id = "add" useGeneratedKeys="true" keyProperty="tid" parameterType = "SysDocument">
+		insert into sys_document_version(docId,version,docPath,changedBy,changedDt) values(#{docId},#{version},#{docPath},#{changedBy},#{changedDt})
+	</insert>
+</mapper>

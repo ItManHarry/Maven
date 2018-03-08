@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.SysCatalogMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 新增目录 -->
+	<insert id = "addCatalog" useGeneratedKeys="true" keyProperty="tid" parameterType = "SysCatalog">
+		insert into sys_catalog(name,parentId,leaf,status) values(#{name},#{parentId},#{leaf},#{status})
+	</insert>
+	<!-- 修改目录 -->
+	<update id = "updateCatalog" parameterType = "SysCatalog">
+		update sys_catalog set 
+			name = #{name}, 
+			parentId = #{parentId}, 
+			leaf = #{leaf}, 
+			status = #{status}
+		where tid = #{tid}
+	</update>
+	<!-- 分页查询所有的目录 -->
+	<select id = "getAll" resultMap = "sysCatalogMap">
+		select 
+			* 
+		from(
+			select 
+			   a.tid as tid,
+		       b.name as ptname,
+		       a.name as name,
+		       c.cdvw as status
+			from sys_catalog a 
+			left join sys_catalog b
+			on a.parentid = b.tid
+		    left join sys_code c
+		    on a.status = c.cdvl
+		    and c.code = 'CSTS'
+		) a limit #{offet, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+	</select>
+	<resultMap id = "sysCatalogMap" type = "CatalogOperateBean">
+		<result property = "tid"  	column = "tid"/>
+		<result property = "ptname" column = "ptname"/>
+		<result property = "name"  	column = "name"/>
+		<result property = "status" column = "status"/>
+	</resultMap>
+	<!-- 获取目录总记录数 -->
+	<select id = "getCatalogCnt" resultType = "int">
+		select count(*) from sys_catalog
+	</select>
+	<!-- 根据id查询获取目录对象 -->
+	<select id = "getSysCatalog" parameterType = "int" resultType = "SysCatalog">
+		select * from sys_catalog where tid = #{tid}
+	</select>
+	<!-- 获取所有目录 -->
+	<select id = "getAllCatalog" resultType = "SysCatalog">
+		select * from sys_catalog where status = 1 order by tid asc
+	</select>
+	<!-- 获取所有的根目录 -->
+	<select id = "getParentCatalog" resultType = "SysCatalog">
+		select * from sys_catalog where status = 1 and parentId = 0 order by name asc
+	</select>
+	<!-- 根据父目录id获取所有的子目录 -->
+	<select id = "getChildCatalog" parameterType = "int" resultType = "SysCatalog">
+		select * from sys_catalog where status = 1 and parentId = #{parentId} order by tid asc
+	</select>
+</mapper>

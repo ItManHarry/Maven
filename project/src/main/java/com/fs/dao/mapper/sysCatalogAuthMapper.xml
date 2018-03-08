@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.SysCatalogAuthMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 赋予目录 -->
+	<insert id = "execute" parameterType = "SysCatalogAuth">
+		insert into sys_catalog_auth(userid,catalog) values(#{userid},#{catalog})
+	</insert>
+	<!-- 根据用户id删除所有的目录权限  -->
+	<delete id = "delete" parameterType = "int">
+		delete from sys_catalog_auth where userid = #{userid}
+	</delete>
+	<!-- 根据用户id查询所有的目录权限 -->
+	<select id = "getSysCatalogAuth" parameterType = "int" resultType = "SysCatalogAuth">
+		select * from sys_catalog_auth where userid = #{userid}
+	</select>
+</mapper>

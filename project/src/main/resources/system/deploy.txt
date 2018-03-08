@@ -1,0 +1,18 @@
+1、创建Mysql数据库用户(root账号 密码：fs;正式环境：fileShare2017)
+	CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+执行脚本：
+	CREATE USER 'fs'@'localhost' IDENTIFIED BY 'fileShare2017';--正式环境localhost更改为ip地址	
+创建数据库：
+	CREATE DATABASE FSDB;
+将FSDB数据库的所有权限赋予fs用户：
+	GRANT ALL ON FSDB.* TO 'fs'@'localhost';--正式环境localhost更改为ip地址	
+2、Tomcat使用jdk1.7(如果在1.6的版本下运行正常，忽略此步骤)
+	bin下新建bat文件，文件内容如下：
+	set JAVA_HOME=C:\Program Files\Java\jdk1.7.0_67
+	set JAVA_OPTS=%JAVA_OPTS%  -Xms1024m -Xmx3072m
+	set TITLE=Doosan ESB
+
+	startup
+3、附件上传磁盘路径新建
+	根据system.properties配置文件中file.savePath的值即可!
+4、执行创建表SQL语句。

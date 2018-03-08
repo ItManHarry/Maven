@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.SysTeamMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 新增Team -->
+	<insert id = "addTeam" parameterType = "SysTeam">
+		insert into sys_team(teamcd,teamnm,bg) values(#{teamcd},#{teamnm},#{bg})
+	</insert>
+	<!-- 更新Team -->
+	<update id = "updateTeam" parameterType = "SysTeam">
+		update sys_team set teamcd = #{teamcd}, teamnm = #{teamnm}, bg = #{bg} where tid = #{tid}
+	</update>
+	<!-- 根据id查询获取Team对象 -->
+	<select id = "getTeam" parameterType = "int" resultType = "SysTeam">
+		select * from sys_team where tid = #{tid}
+	</select>
+	<!-- 分页查询所有的Team -->
+	<select id = "getAll" resultMap = "sysTeamMap">
+		select 
+			* 
+		from(
+			select 
+			  a.tid as tid,
+			  b.cdvw as bg,
+			  a.teamcd as teamcd,
+			  a.teamnm as teamnm
+			from sys_team a 
+			left join sys_code b
+			on a.bg = b.cdvl
+			where b.code = 'BG'
+			order by a.bg asc, a.teamcd asc
+		) a limit #{offet, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+	</select>
+	<resultMap id = "sysTeamMap" type = "SysTeamBean">
+		<result property = "tid"  column = "tid"/>
+		<result property = "bg"  column = "bg"/>
+		<result property = "teamcd" column = "teamcd"/>
+		<result property = "teamnm" column = "teamnm"/>
+	</resultMap>
+	<!-- 查询法人下所有的Team -->
+	<select id = "getTeams" parameterType = "int" resultType = "SysTeam">
+		select * from sys_team where bg = #{bg} order by bg asc, teamcd asc
+	</select>
+	<!-- 获取Team总记录数 -->
+	<select id = "getTeamCnt" resultType = "int">
+		select count(*) from sys_team
+	</select>
+</mapper>

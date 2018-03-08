@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.ServerInfoMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 新增服务器 -->
+	<insert id = "addServer" parameterType = "ServerInfo">
+		insert into server_info(machineName,
+			machineModel,
+			machineUsage,
+			serialNumber,
+			rent,
+			rentEndDt,
+			os,
+			ip,
+			cpuModel,
+			cpuCore,
+			memory,
+			disk,
+			usageCategory,
+			middleware,
+			envirDistinguish,
+			machineAdd,
+			run,
+			manageBy
+		) values(#{machineName},
+			#{machineModel},
+			#{machineUsage},
+			#{serialNumber},
+			#{rent},
+			#{rentEndDt},
+			#{os},
+			#{ip},
+			#{cpuModel},
+			#{cpuCore},
+			#{memory},
+			#{disk},
+			#{usageCategory},
+			#{middleware},
+			#{envirDistinguish},
+			#{machineAdd},
+			#{run},
+			#{manageBy}
+		)
+	</insert>
+	<!-- 更新服务器 -->
+	<update id = "updateServer" parameterType = "ServerInfo">
+		update server_info set 
+			machineName = #{machineName}, 
+			machineModel = #{machineModel}, 
+			machineUsage = #{machineUsage}, 
+			serialNumber = #{serialNumber}, 
+			rent = #{rent}, 
+			rentEndDt = #{rentEndDt}, 
+			os = #{os} , 
+			ip = #{ip}, 
+			cpuModel = #{cpuModel}, 
+			cpuCore = #{cpuCore}, 
+			memory = #{memory}, 
+			disk = #{disk}, 
+			usageCategory = #{usageCategory} , 
+			middleware = #{middleware}, 
+			envirDistinguish = #{envirDistinguish}, 
+			machineAdd = #{machineAdd}, 
+			run = #{run},
+			manageBy = #{manageBy}
+		where tid = #{tid}
+	</update>
+	<!-- 根据ID获取ServerInfo对象 -->
+	<select id = "getServer" parameterType = "int" resultType = "ServerInfo">
+		select * from server_info where tid = #{tid}
+	</select>
+	<!-- 分页查询所有的服务器信息 -->
+	<select id = "getAll" resultMap = "serverInfoMap">
+		select 
+			* 
+		from(
+			select 
+		        a.tid as tid,
+		        a.machineName as machineName,
+		        a.machineModel as machineModel,
+		        a.machineUsage as machineUsage,
+		        a.serialNumber as serialNumber,
+		        b.cdvw as rent,
+		        a.rentEndDt as rentEndDt,
+		        g.cdvw as os,
+		        a.ip as ip,
+		        a.cpuModel as cpuModel,
+		        a.cpuCore as cpuCore,
+		        a.memory as memory,
+		        a.disk as disk,
+		        c.cdvw as usageCategory,
+		        d.cdvw as middleware,
+		        a.envirDistinguish as envirDistinguish,
+		        e.cdvw as machineAdd,
+		        a.run as run,
+		        f.teamnm as manageBy
+			from server_info a 
+	      	left join sys_code b
+			on a.rent = b.cdvl
+	      	and b.code = 'RENT'
+	      	left join sys_code c
+			on a.usageCategory = c.cdvl
+	      	and c.code = 'MCHUSAGE'
+	      	left join sys_code d
+			on a.middleware = d.cdvl
+	      	and d.code = 'MIDDLEWARE'
+	      	left join sys_code e
+			on a.machineAdd = e.cdvl
+	      	and e.code = 'SERADD'
+	      	left join sys_team f
+	      	on a.manageBy = f.tid
+	      	left join sys_code g
+			on a.os = g.cdvl
+     	 	and g.code = 'OSTP'
+	      	order by a.tid
+		) a limit #{offet, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+	</select>
+	<resultMap id = "serverInfoMap" type = "ServerInfoBean">
+		<result property = "tid"  	column = "tid"/>
+		<result property = "machineName" column = "machineName"/>
+		<result property = "machineModel" column = "machineModel"/>
+		<result property = "machineUsage" 	column = "machineUsage"/>
+		<result property = "serialNumber"  	column = "team"/>
+		<result property = "rent" column = "rent"/>
+		<result property = "rentEndDt" 	column = "rentEndDt"/>
+		<result property = "os" column = "os"/>
+		<result property = "ip" column = "ip"/>
+		<result property = "cpuModel" 	column = "cpuModel"/>
+		<result property = "cpuCore"  	column = "cpuCore"/>
+		<result property = "memory" column = "memory"/>
+		<result property = "disk" 	column = "disk"/>
+		<result property = "usageCategory" column = "usageCategory"/>
+		<result property = "middleware" column = "middleware"/>
+		<result property = "envirDistinguish" 	column = "envirDistinguish"/>
+		<result property = "machineAdd"  	column = "machineAdd"/>
+		<result property = "run" column = "run"/>
+		<result property = "manageBy" 	column = "manageBy"/>
+	</resultMap>
+	<!-- 获取服务器总记录数 -->
+	<select id = "getServerCnt" resultType = "int">
+		select count(*) from server_info
+	</select>
+</mapper>

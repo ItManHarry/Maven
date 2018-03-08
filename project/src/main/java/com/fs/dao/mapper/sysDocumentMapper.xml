@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.SysDocumentMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 新增文档 -->
+	<insert id = "add" useGeneratedKeys="true" keyProperty="tid" parameterType = "SysDocument">
+		insert into sys_document(docName,catalog,savePath,folderPath,uploadedBy,uploadedDt) values(#{docName},#{catalog},#{savePath},#{folderPath},#{uploadedBy},#{uploadedDt})
+	</insert>
+	<!-- 根据id获取文档 -->
+	<select id = "getDocument" parameterType = "int" resultType = "SysDocument">
+		select * from sys_document where tid = #{tid}
+	</select>
+	<!-- 获取文件夹下的所有文档 -->
+	<select id = "getDocumentsByCatalog" parameterType = "int" resultType = "SysDocument">
+		select * from sys_document where catalog = #{catalog}
+	</select>
+	<!-- 获取用户上传的所有文档 -->
+	<select id = "getDocumentsByUploader" parameterType = "String" resultType = "SysDocument">
+		select * from sys_document where uploadedBy = #{uploadedBy}
+	</select>	
+	<!-- 获取用户某个目录下上传的文件 -->
+	<select id = "getMyDocuments" resultType = "SysDocument">
+		select * from sys_document where catalog = #{catalog, jdbcType=INTEGER} and uploadedBy = #{uploadedBy, jdbcType=VARCHAR}
+	</select>	
+	<!-- 分页查询所有的文档 -->
+	<select id = "getAllDocuments" resultType = "SysDocument">
+		select 
+			* 
+		from(
+			select 
+			  *
+			from sys_document 
+			where docname like concat('%',#{docName, jdbcType=VARCHAR},'%')
+			<if test = "catalog != 0"> and catalog = #{catalog, jdbcType=INTEGER}</if>
+		    order by uploadedDt asc
+		) a limit #{offet, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+	</select>
+	<!-- 获取文档总记录数 -->
+	<select id = "getDocumentCnt" resultType = "int">
+		select count(*) from sys_document
+	</select>
+	<!-- 获取文档总记录数 -->
+	<select id = "getDocCnt" resultType = "int">
+		select count(*) from sys_document
+		where docname like concat('%',#{docName, jdbcType=VARCHAR},'%')
+		<if test = "catalog != 0"> and catalog = #{catalog, jdbcType=INTEGER}</if>
+	</select>
+	<!-- 删除文档 -->
+	<delete id = "deleteDocument" parameterType = "int">
+		delete from sys_document where tid=#{tid}
+	</delete>
+</mapper>

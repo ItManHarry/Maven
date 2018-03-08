@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans  default-lazy-init="true"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+	classpath:/org/springframework/beans/factory/xml/spring-beans-4.3.xsd 
+	http://www.springframework.org/schema/context  
+	classpath:/org/springframework/context/config/spring-context-4.3.xsd
+	http://www.springframework.org/schema/aop     
+	classpath:/org/springframework/aop/config/spring-aop-4.3.xsd
+	http://www.springframework.org/schema/tx    
+	classpath:/org/springframework/transaction/config/spring-tx-4.3.xsd">
+	<!-- 使用扫描装配 -->
+	<context:component-scan base-package="com"/>
+	<!-- 组件扫描配置 -->
+	<context:annotation-config />
+	<!-- 引入配置文件 -->
+	<context:property-placeholder location = "classpath:system.properties"/>
+	<!-- 集成Mybatis配置数据源 -->
+	<bean id = "dataSource" class = "org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${db.driverClassName}" />
+	    <property name="url" value="${db.url}" />
+	    <property name="username" value="${db.username}" />
+	    <property name="password" value="${db.password}" />
+	</bean>
+	<!-- Mybatis的SqlSession工厂 :SqlSessionFactoryBean-->
+	<bean id = "sqlSessionFactory" class = "org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 设置数据源 -->
+		<property name = "dataSource" ref = "dataSource"></property>
+		<!-- 设置Mybatis配置文件路径 -->
+		<property name = "configLocation" value = "classpath:mybatis-config.xml"/> 
+		<!-- 自动扫描对应表映射的类 -->
+		<property name = "typeAliasesPackage" value = "com.fs.dao"></property>
+		<!-- 加载Mybatis映射文件 -->
+		<property name="mapperLocations">  
+            <list>  
+                <value>classpath:com/fs/dao/mapper/**/*.xml</value>  
+            </list>  
+        </property>  
+	</bean>
+	<!-- Mybatis自动扫描加载Sql映射文件及接口 ： MapperScannerConfigurer -->
+	<bean class = "org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 指定Sql映射文件/接口所在的包 -->
+		<property name = "basePackage" value = "com.fs.dao.mapper"></property>
+		<!-- 指定session工厂 -->
+		<!--property name = "sqlSessionFactory" ref = "sqlSessionFactory"></property-->
+		<property name = "sqlSessionFactoryBeanName" value = "sqlSessionFactory"/>
+	</bean>
+	<!-- Spring事务管理  ：  DataSourceTransactionManager-->
+	<bean id = "txManager" class = "org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 设置数据源 -->
+		<property name = "dataSource" ref = "dataSource"></property>
+	</bean>
+	<!-- 使用声明式事务 -->
+	<tx:annotation-driven transaction-manager = "txManager"/>
+    <!-- 国际化资源文件 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:messages/message" />
+    </bean>
+    <!-- 获取系统属性配置 -->
+    <bean id = "sysPropertiesConfig" class = "com.fs.util.config.SysPropertiesConfig">
+    	<property name = "fileUploadPath" value = "${file.savePath}"/> 
+    </bean>
+    <!-- 初始化权限菜单节点 -->
+	<bean id = "catalog" class = "com.fs.sys.init.CatalogInitialization" init-method="init" scope="singleton"></bean>
+</beans>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.fs.dao.mapper.SysUserMapper">
+	<!-- 开启二级缓存 -->
+	<!--cache></cache-->
+	<!-- 新增User -->
+	<insert id = "addUser" parameterType = "SysUser">
+		insert into sys_user(usercd,usernm,roleid,teamid,status,bg) values(#{usercd},#{usernm},#{roleid},#{teamid},#{status},#{bg})
+	</insert>
+	<!-- 更新用户 -->
+	<update id = "updateUser" parameterType = "SysUser">
+		update sys_user set 
+			usercd = #{usercd}, 
+			usernm = #{usernm}, 
+			roleid = #{roleid}, 
+			teamid = #{teamid}, 
+			status = #{status}, 
+			bg = #{bg} 
+		where tid = #{tid}
+	</update>
+	<!-- 根据id获取User对象 -->
+	<select id = "getUser" parameterType = "int" resultType = "SysUser">
+		select * from sys_user where tid = #{tid}
+	</select>
+	<!-- 根据code获取User对象 -->
+	<select id = "getUserByCode" parameterType = "String" resultType = "SysUser">
+		select * from sys_user where usercd = #{usercd}
+	</select>
+	<!-- 分页查询所有的用户 -->
+	<select id = "getAll" resultMap = "sysUserMap">
+		select 
+			* 
+		from(
+			select 
+			   a.tid as tid,
+		       a.usercd as usercd,
+		       a.usernm as usernm,
+		       d.cdvw as role,
+		       c.teamnm as team,
+		       b.cdvw as bg,
+		       e.cdvw as status
+			from sys_user a 
+			left join sys_code b
+			on a.bg = b.cdvl
+		    and b.code = 'BG'
+		    left join sys_team c
+		    on a.teamid = c.tid
+		    left join sys_code d
+		    on a.roleid = d.cdvl
+		    and d.code = 'ROLE'		
+		    left join sys_code e
+		    on a.status = e.cdvl
+		    and e.code = 'STATUS'
+		    order by a.tid asc
+		) a limit #{offet, jdbcType=INTEGER}, #{limit, jdbcType=INTEGER}
+	</select>
+	<resultMap id = "sysUserMap" type = "SysUserBean">
+		<result property = "tid"  	column = "tid"/>
+		<result property = "usercd" column = "usercd"/>
+		<result property = "usernm" column = "usernm"/>
+		<result property = "role" 	column = "role"/>
+		<result property = "team"  	column = "team"/>
+		<result property = "status" column = "status"/>
+		<result property = "bg" 	column = "bg"/>
+	</resultMap>
+	<!-- 获取用户总记录数 -->
+	<select id = "getUserCnt" resultType = "int">
+		select count(*) from sys_user
+	</select>
+	<!-- 根据用户代码获取用户总记录数 -->
+	<select id = "checkUserCnt" parameterType = "String" resultType = "int">
+		select count(*) from sys_user where usercd = #{usercd}
+	</select>
+</mapper>

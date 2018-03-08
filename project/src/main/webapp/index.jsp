@@ -1,0 +1,1 @@
+<% response.sendRedirect("sys/home.do");%>
