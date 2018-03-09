@@ -1,13 +1,7 @@
 # Maven
 ![Maven](http://mvnrepository.com/assets/images/392dffac024b9632664e6f2c0cac6fe5-logo.png)
 
-# 1.[Maven仓库地址][maven]
-
-# 2.加载本地jar包
-- 1:首先将jar文件放到D盘下；
-- 2:执行命令：
-	mvn install:install-file -Dfile=wm-isclient.jar -DgroupId=doosan.eai.tool -DartifactId=eai.tool.modul -Dversion=1.0 -Dpackaging=jar
-# 3.Maven下载
+# 1.Maven下载
 - [Apache Maven地址][apache]
 
 ![maven](../img/maven.jpg)
@@ -26,7 +20,7 @@
 	```
 - 本地环境配置完毕
 
-# 4.Eclipse集成配置本地Maven
+# 2.Eclipse集成配置本地Maven
 
 - 打开Eclipse,点击工具栏的Window,下拉菜单选择Preferences。
 
@@ -39,6 +33,13 @@
 ![mavenecfg2](../img/emconfig2.jpg)
 
 - Eclipse配置本地Maven完成
+
+# 3.[Maven仓库地址][maven]
+
+# 4.加载本地jar包
+- 1:首先将jar文件放到D盘下；
+- 2:执行命令：
+	mvn install:install-file -Dfile=wm-isclient.jar -DgroupId=doosan.eai.tool -DartifactId=eai.tool.modul -Dversion=1.0 -Dpackaging=jar
 
 <!-- 链接地址 -->
 [maven]:http://mvnrepository.com/
